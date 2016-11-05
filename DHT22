@@ -91,9 +91,6 @@ class sensor:
                   if self.LED is not None:
                      self.pi.write(self.LED, 0)
 
-               else:
-
-                  self.bad_CS += 1
 
          elif self.bit >=24: # in temp low byte
             self.tL = (self.tL<<1) + val
@@ -124,19 +121,9 @@ class sensor:
 
       else: # level == pigpio.TIMEOUT:
          self.pi.set_watchdog(self.gpio, 0)
-         if self.bit < 8:       # Too few data bits received.
-            self.bad_MM += 1    # Bump missing message count.
-            self.no_response += 1
-            if self.no_response > self.MAX_NO_RESPONSE:
-               self.no_response = 0
-               self.bad_SR += 1 # Bump sensor reset count.
          
-	 elif self.bit < 39:    # Short message receieved.
-            self.bad_SM += 1    # Bump short message count.
-            self.no_response = 0
-
-         else:                  # Full message received.
-            self.no_response = 0
+	 if self.bit >=39 :                  # Full message received.
+         	self.no_response = 0
 
    def temperature(self):
 
@@ -146,42 +133,16 @@ class sensor:
 
       return self.rhum
 
-   def staleness(self):
-
-      if self.tov is not None:
-         return time.time() - self.tov
-      else:
-         return -999
-
-   def bad_checksum(self):
-
-      return self.bad_CS
-
-   def short_message(self):
-
-      return self.bad_SM
-
-   def missing_message(self):
-
-      return self.bad_MM
-
-   def sensor_resets(self):
-
-      return self.bad_SR
-
    def trigger(self):
 
       if self.powered:
-         if self.LED is not None:
-            self.pi.write(self.LED, 1)
-
+         self.pi.write(self.LED, 1)
          self.pi.write(self.gpio, pigpio.LOW)
          time.sleep(0.017) # 17 ms
          self.pi.set_mode(self.gpio, pigpio.INPUT)
          self.pi.set_watchdog(self.gpio, 200)
 
    def cancel(self):
-    
 
       self.pi.set_watchdog(self.gpio, 0)
 
@@ -191,21 +152,11 @@ class sensor:
 
 if __name__ == "__main__":
 
-   import time
-
-   import pigpio
-
-
    # Intervals of about 2 seconds or less will eventually hang the DHT22.
    INTERVAL=3
-
    pi = pigpio.pi()
-
    s = sensor(pi, 4, LED=2)
-
    r = 0
-
-   next_reading = time.time()
 
    while True:
 
@@ -215,11 +166,9 @@ if __name__ == "__main__":
 
       time.sleep(0.2)
 
-      print("{} {:3.2f} {}".format(r, s.humidity(), s.temperature()))
+      print("{} {:3.2f}*C {}% {}".format(r, s.humidity(), s.temperature(),time.ctime()))
 
-      next_reading += INTERVAL
-
-      time.sleep(next_reading-time.time()) # Overall INTERVAL second polling.
+      time.sleep(INTERVAL) # Overall INTERVAL second polling.
 
    s.cancel()
 
