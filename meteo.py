@@ -1,8 +1,6 @@
 import argparse
-import smbus
 import time
-from ctypes import c_short
-import pigpio
+import csv
 from DHT22 import DHT22
 from BMP180 import BMP180
 
@@ -21,11 +19,14 @@ if __name__ == "__main__":
     dht22 = DHT22(17, 27)
     i = 0
     SLEEP_INTERVAL = args.time / 1000.0
+    csvWriter=csv.writer(open('out.csv','a'),delimiter=',')
 
     while i < args.number:
         bmp180.update()
         dht22.update()
         time.sleep(SLEEP_INTERVAL)
-        print(bmp180.getPressure(), dht22.getTemperature(), dht22.getHumidity())
+        print(time.time(),float("%.2f" % dht22.getTemperature()),float("%.2f" % bmp180.getPressure()),float("%.2f" % dht22.getHumidity()))
+        csvWriter.writerow([time.time(),float("%.2f" % dht22.getTemperature()),float("%.2f" % bmp180.getPressure()),float("%.2f" % dht22.getHumidity())])
         i += 1
     dht22.destroy()
+

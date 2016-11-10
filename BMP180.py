@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 import smbus
+import pigpio
 import time
 from ctypes import c_short
 
 class BMP180:
     def __init__(self,controlLed):
+        self.pi= pigpio.pi()
+        self.controlLed=controlLed
+        self.ledVal=0
         self.DEVICE = 0x77  # I2C DEVICEess
         self.bus = smbus.SMBus(1)  # PI version 2
         # Register DEVICEesses
@@ -34,6 +38,12 @@ class BMP180:
 
     def update(self):
         self.data = self.bus.read_i2c_block_data(self.DEVICE, self.REG_CALIB, 22)
+        if self.ledVal == 0:
+            self.pi.write(self.controlLed, 1)
+            self.ledVal = 1
+        else:
+            self.pi.write(self.controlLed, 0)
+            self.ledVal = 0
 
         # Convert byte data to word values
         AC1 = self.getShort(self.data, 0)
