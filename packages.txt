@@ -1,0 +1,5 @@
+sudo apt-get install python-matplotlib
+sudo apt-get install python-tk
+sudo apt-get install python-pip
+sudo pip install numpy
+sudo pip install pandas
