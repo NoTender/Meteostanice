@@ -81,4 +81,3 @@ class BMP180:
         X2 = (-7357 * P) >> 16
         self.pressure = P + ((X1 + X2 + 3791) >> 4)
         self.pi.write(self.controlLed, 0)
-
