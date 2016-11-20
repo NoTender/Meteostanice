@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import argparse
 import time
 import csv
@@ -29,3 +30,4 @@ if __name__ == "__main__":
         csvWriter.writerow([time.time(),float("%.2f" % dht22.getTemperature()),float("%.2f" % bmp180.getPressure()),float("%.2f" % dht22.getHumidity())])
         i += 1
     dht22.destroy()
+

@@ -1,6 +1,7 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import print_function   
-import matplotlib.pyplot as plt
+import matplotlib
 import pandas as pd
 import datetime
 import math
