@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import print_function   
-import matplotlib
+import matplotlib.pyplot as plt
 import pandas as pd
 import datetime
 import math
@@ -101,4 +101,6 @@ class Plotter:
             #Plot data into graph
             plt.plot(false_x, value, 'o-' ,lw=2.5, markersize=5.0, markeredgewidth=0.0 ,color=self.colors[key])
         
-        plt.show()
+       	    plt.show()
+Plotter().plot()
+
