@@ -82,7 +82,7 @@ class Plotter:
             plt.xticks(range(len(times)), times, rotation=90)
 
             #Set number of x ticks labels 
-            ticks_labels_frequency = int(math.ceil(len(value) / 150.))
+            ticks_labels_frequency = int(math.ceil(len(value) / 140.))
             frame = plt.gca()
             for label in frame.axes.get_xaxis().get_ticklabels():
                 label.set_visible(False)
